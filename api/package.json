@@ -1,0 +1,42 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "API backend",
+  "main": "index.js",
+  "author": "Elvyn M",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "npm run build",
+    "start": "tsc && node ./compiled/src/server.js",
+    "test": "mocha -r ts-node/register spec/**/*.spec.ts --reporter spec --require spec/index.ts --exit",
+    "noto": "mocha -r ts-node/register spec/**/*.spec.ts --reporter spec --require spec/index.ts --no-timeout --exit",
+    "lint": "eslint src/**/*.ts spec/**/*.spec.ts",
+    "lint-fix": "eslint --fix src/**/*.ts spec/**/*.spec.ts"
+  },
+  "dependencies": {
+    "@types/chai": "^4.3.13",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/mocha": "^10.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.11.30",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@upstash/redis": "^1.29.0",
+    "chai": "^4.3.7",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "express": "^4.18.3",
+    "http": "^0.0.1-security",
+    "mocha": "^10.2.0",
+    "morgan": "^1.10.0",
+    "prettier": "^3.2.5",
+    "replicate": "^0.29.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.4.2"
+  }
+}
