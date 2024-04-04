@@ -93,20 +93,36 @@ type Package = {
   mass: number;
 };
 
+const INVALID_INPUTS = ["", 0, null, undefined];
+
 export default function (req: Request, res: Response) {
-  console.info("Entering /api/v1/packages/sort", req.body);
+  console.info("Entering POST /api/v1/packages/sort", req.body);
   try {
     const { width, height, length, mass } = req.body;
 
-    if ([width, height, length, mass].some(e => e === null || e === undefined || e === "" || e === 0)) {
+    if (
+      [
+        width,
+        height,
+        length,
+        mass
+      ].some(entry => INVALID_INPUTS.includes(entry))
+    ) {
         return res
             .status(422)
-            .json({ error: "width, height, length, mass are required. Values must be a number" });
+            .json({ error: `Invalid inputs. Values must be numbers greater than 0. Given width: ${width}, height: ${height}, length: ${length}, mass: ${mass}` });
     }
 
-    return res
+    try {
+      const sortOrder = sort(width, height, length, mass);
+      return res
         .status(200)
-        .json({ sort_order: sort(width, height, length, mass)} );
+        .json({ sort_order: sortOrder });
+    } catch (error: any) {
+      return res
+        .status(422)
+        .json(`Unprocessable Entity. Error: ${error.message}`);
+    }
 
   } catch (error: any) {
     return res

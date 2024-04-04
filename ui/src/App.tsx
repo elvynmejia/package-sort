@@ -7,7 +7,7 @@ type PackageAttributes = {
   length: number;
   width: number;
   height: number;
-  mass: number
+  mass: number;
 };
 
 const initialState = {
@@ -19,7 +19,7 @@ const initialState = {
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<boolean | string>(false);
   const [sortOrder, setSortOrder] = useState(null);
 
   const [packageAttributes, setPackageAttributes]= useState<PackageAttributes>({
@@ -28,6 +28,15 @@ function App() {
 
   const handlePackageAttributeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event?.target;
+    
+    setError("");
+
+    if (value && (value as unknown as number) <= 0) {
+      setError(`Invalid value. Value must be a number greater than 0. Field: ${name}. Value given: ${value}.`);
+      event.target.value = "";
+      return;
+    }
+
     setPackageAttributes({
       ...packageAttributes,
       [name]: value
@@ -69,42 +78,20 @@ function App() {
       {sortOrder && <Alert status="success" className="text-center">{sortOrder}</Alert>}
       {loading && <Loading />}
       <div className="flex justify-center flex-col space-y-5 mt-10">
-        <div>
-          <p>length</p>
-          <Input
-            name="length"
-            value={packageAttributes.length}
-            type="number"
-            onChange={handlePackageAttributeChange}
-          />
-        </div>
-        <div>
-          <p>width</p>
-          <Input
-            name="width"
-            value={packageAttributes.width}
-            type="number"
-            onChange={handlePackageAttributeChange}
-          />
-        </div>
-        <div>
-          <p>height</p>
-          <Input
-            name="height"
-            value={packageAttributes.height}
-            type="number"
-            onChange={handlePackageAttributeChange}
-          />
-        </div>
-        <div>
-          <p>mass</p>
-          <Input
-            name="mass"
-            value={packageAttributes.mass}
-            type="number"
-            onChange={handlePackageAttributeChange}
-          />
-        </div>
+        {Object.keys(packageAttributes).map((key: string) => {
+          const value = packageAttributes[key as keyof PackageAttributes];
+          return (
+            <div key={key}>
+              <p>{key}</p>
+              <Input
+                name={key}
+                value={value}
+                type="number"
+                onChange={handlePackageAttributeChange}
+              />
+            </div>
+          )
+        })}
 
         <Button 
           size="sm"
@@ -119,7 +106,7 @@ function App() {
         >
           Reset
         </Button>
-        {/* <pre>{JSON.stringify(packageAttributes, null, 2)}</pre> */}
+        <pre>{JSON.stringify(packageAttributes, null, 2)}</pre>
       </div>
     </div>
   )
